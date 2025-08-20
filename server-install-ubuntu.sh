@@ -3,40 +3,37 @@
 # --- 設定 ---
 # このスクリプトはrootユーザーで実行することを前提としています
 
-# SteamCMDのディレクトリ
-STEAMCMD_DIR=~/steamcmd
 # ASAサーバーのインストールディレクトリ
-ASA_SERVER_DIR=~/asa_server
+ASA_SERVER_DIR="/home/steam/Steam/"
+# GE-Proton8-21のインストールディレクトリ
+PROTON_DIR="/home/steam/Steam/compatibilitytools.d/"
+# ASAサーバーのApp ID
+ASA_APPID=2430930
 
 # --- ステップ1: 依存関係のインストール ---
-# 32ビットアーキテクチャの有効化と、steamcmdのインストール
 echo "Installing prerequisites..."
 sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install -y steamcmd
 
-# --- ステップ2: SteamCMDとProtonのダウンロード ---
-# SteamCMDのディレクトリを作成
-echo "Creating SteamCMD directory..."
-mkdir -p "$STEAMCMD_DIR"
-
-# Protonをダウンロード (Proton 8.0を使用)
-echo "Downloading Proton..."
-"$STEAMCMD_DIR/steamcmd.sh" +login anonymous +app_update 1493710 +quit
-
 # --- ステップ3: ASAサーバーのダウンロード ---
-# ASAサーバーのインストールディレクトリを作成
-echo "Creating ASA server directory..."
-mkdir -p "$ASA_SERVER_DIR"
-
 # ASAサーバーをダウンロード
 echo "Downloading ASA dedicated server..."
-"$STEAMCMD_DIR/steamcmd.sh" +force_install_dir "$ASA_SERVER_DIR" +login anonymous +app_update 2430930 validate +quit
+steamcmd +force_install_dir /home/steam/ +login anonymous +app_update "$ASA_APPID" validate +quit
+
+# --- ステップ2: Protonのダウンロード ---
+# Protonをダウンロード (Proton 8.0を使用)
+echo "Downloading Proton..."
+cd ~
+curl -L -o GE-Proton8-21.tar.gz https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-21/GE-Proton8-21.tar.gz
+tar -xf GE-Proton8-21.tar.gz
+sudo mv GE-Proton8-21 /home/steam/compatibilitytools.d/
+sudo chown -R /home/steam/compatibilitytools.d/GE-Proton8-21
+sudo chmod -R +x /home/steam/compatibilitytools.d/GE-Proton8-21/
 
 # --- ステップ4: systemdサービスのインストール ---
-# リポジトリにあるサービスファイルをコピー
 echo "Copying systemd service file from repository..."
-sudo cp ./systemd/asa-server.service /etc/systemd/system/ark-island.service
+sudo cp ./systemd/asa-server.service /etc/systemd/system/asa-server.service
 
 # サービスを有効化し、起動
 echo "Enabling and starting the service..."
