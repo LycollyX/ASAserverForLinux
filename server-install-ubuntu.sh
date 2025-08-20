@@ -29,7 +29,7 @@ curl -L -o GE-Proton8-21.tar.gz https://github.com/GloriousEggroll/proton-ge-cus
 tar -xf GE-Proton8-21.tar.gz
 sudo mv GE-Proton8-21 /home/steam/compatibilitytools.d/
 sudo chown -R /home/steam/compatibilitytools.d/GE-Proton8-21
-sudo chmod -R +x /home/steam/compatibilitytools.d/GE-Proton8-21/
+sudo chmod -R 744 /home/steam/compatibilitytools.d/GE-Proton8-21/
 
 # --- ステップ4: systemdサービスのインストール ---
 echo "Copying systemd service file from repository..."
