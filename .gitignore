@@ -1,0 +1,4 @@
+# Ignore server and log files
+/asa_server/
+/steamcmd/
+*.log
