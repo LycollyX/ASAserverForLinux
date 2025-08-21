@@ -27,7 +27,7 @@ ASA_APPID=2430930
 # ASAサーバーをダウンロード
 echo "Downloading ASA dedicated server..."
 sudo -u steam
-/usr/games/steamcmd +force_install_dir "/home/steam/Steam/" +login anonymous +app_update "$ASA_APPID" validate +quit
+/usr/games/steamcmd +force_install_dir "/home/steam/Steam/steamapps/common/ARK Survival Ascended Dedicated Server/" +login anonymous +app_update "$ASA_APPID" validate +quit
 
 # --- ステップ2: Protonのダウンロード ---
 # Protonをダウンロード (Proton 8.0を使用)
