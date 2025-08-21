@@ -9,10 +9,6 @@ sudo dpkg --add-architecture i386
 sudo apt update
 
 # SteamCMDのインストール
-sudo debconf-set-selections <<EOF
-steam steam/license note ''
-steam steam/question select "I AGREE"
-EOF
 sudo apt install -y steamcmd
 
 # ユーザーの追加
