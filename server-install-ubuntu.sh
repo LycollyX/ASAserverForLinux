@@ -7,9 +7,15 @@
 echo "Installing prerequisites..."
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt -y upgrade
-sudo apt install git vim
+
+# SteamCMDのインストール
+sudo debconf-set-selections <<EOF
+steam steam/license note ''
+steam steam/question select "I AGREE"
+EOF
 sudo apt install -y steamcmd
+
+# ユーザーの追加
 sudo useradd steam
 sudo mkdir /home/steam
 sudo chown steam:steam /home/steam
@@ -21,6 +27,12 @@ PROTON_DIR="/home/steam/Steam/compatibilitytools.d/"
 # ASAサーバーのApp ID
 ASA_APPID=2430930
 
+# --- ステップ3: ASAサーバーのダウンロード ---
+# ASAサーバーをダウンロード
+echo "Downloading ASA dedicated server..."
+sudo -u steam
+/usr/games/steamcmd +force_install_dir /home/steam/Steam/ +login anonymous +app_update "$ASA_APPID" validate +quit
+
 # --- ステップ2: Protonのダウンロード ---
 # Protonをダウンロード (Proton 8.0を使用)
 echo "Downloading Proton..."
@@ -29,16 +41,11 @@ curl -L -o GE-Proton8-21.tar.gz https://github.com/GloriousEggroll/proton-ge-cus
 tar -xf GE-Proton8-21.tar.gz
 sudo mv GE-Proton8-21 /home/steam/Steam/compatibilitytools.d/
 sudo chown -R steam:steam /home/steam/Steam/compatibilitytools.d/
-sudo chmod -R +x /home/steam/Steam/compatibilitytools.d/
-
-# --- ステップ3: ASAサーバーのダウンロード ---
-# ASAサーバーをダウンロード
-echo "Downloading ASA dedicated server..."
-/usr/games/steamcmd +force_install_dir /home/steam/Steam/steamapps/common/ +login anonymous +app_update "$ASA_APPID" validate +quit
+sudo chmod -R 744 /home/steam/Steam/compatibilitytools.d/
 
 # --- ステップ4: systemdサービスのインストール ---
 echo "Copying systemd service file from repository..."
-sudo cp systemd/ark-island.service /etc/systemd/system/ark-island.service
+sudo cp ark-island.service /etc/systemd/system/ark-island.service
 sudo chmod 744 /etc/systemd/system/ark-island.service
 
 # サービスを有効化し、起動
