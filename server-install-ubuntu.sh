@@ -3,18 +3,19 @@
 # --- 設定 ---
 # このスクリプトはrootユーザーで実行することを前提としています
 
+# --- ステップ1: 依存関係のインストール ---
+echo "Installing prerequisites..."
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install -y steamcmd
+sudo adduser steam
+
 # ASAサーバーのインストールディレクトリ
 ASA_SERVER_DIR="/home/steam/Steam/"
 # GE-Proton8-21のインストールディレクトリ
 PROTON_DIR="/home/steam/Steam/compatibilitytools.d/"
 # ASAサーバーのApp ID
 ASA_APPID=2430930
-
-# --- ステップ1: 依存関係のインストール ---
-echo "Installing prerequisites..."
-sudo dpkg --add-architecture i386
-sudo apt update
-sudo apt install -y steamcmd
 
 # --- ステップ3: ASAサーバーのダウンロード ---
 # ASAサーバーをダウンロード
@@ -28,8 +29,8 @@ cd ~
 curl -L -o GE-Proton8-21.tar.gz https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-21/GE-Proton8-21.tar.gz
 tar -xf GE-Proton8-21.tar.gz
 sudo mv GE-Proton8-21 /home/steam/compatibilitytools.d/
-sudo chown -R /home/steam/compatibilitytools.d/GE-Proton8-21
-sudo chmod -R 744 /home/steam/compatibilitytools.d/GE-Proton8-21/
+sudo chown -R steam:steam /home/steam/compatibilitytools.d/GE-Proton8-21
+sudo chmod -R +x /home/steam/compatibilitytools.d/GE-Proton8-21/
 
 # --- ステップ4: systemdサービスのインストール ---
 echo "Copying systemd service file from repository..."
@@ -38,8 +39,8 @@ sudo cp ./systemd/asa-server.service /etc/systemd/system/asa-server.service
 # サービスを有効化し、起動
 echo "Enabling and starting the service..."
 sudo systemctl daemon-reload
-sudo systemctl enable asa-server.service
-sudo systemctl start asa-server.service
+sudo systemctl enable ark-island.service
+sudo systemctl start ark-island.service
 
 echo "================================================="
 echo "ASA server installation is complete."
